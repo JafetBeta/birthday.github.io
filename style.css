@@ -1,0 +1,134 @@
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+body {
+  /* Fondo animado suave */
+  background: linear-gradient(-45deg, #d9a7c7, #ffccd5, #e6c7c7, #fff0f5);
+  background-size: 400% 400%;
+  animation: gradientBG 15s ease infinite;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@keyframes gradientBG {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Animación genérica (opcional) */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.card {
+  position: relative;
+  /* Dimensiones de la carta */
+  max-width: 320px;
+  width: 90%;
+  aspect-ratio: 320 / 400;
+  perspective: 1200px;
+  transition: 1s;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  cursor: pointer; /* Icono de mano para indicar clic */
+}
+
+/* --- LÓGICA DE APERTURA (.open) --- */
+.card.open {
+  transform: rotate(-5deg);
+}
+
+.card.open .outside {
+  transform: rotateY(-130deg);
+}
+/* ---------------------------------- */
+
+.outside,
+.inside {
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  left: 0;
+}
+
+.inside {
+  background: linear-gradient(to right, #e7e7e7, #ffffff 30%);
+  line-height: 1.5;
+  padding: 0 20px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Estilo del mensaje principal */
+.inside p#message-text {
+  font-size: 1rem;
+  color: #333;
+}
+
+/* Estilo de la firma */
+#signature {
+  opacity: 0; /* Invisible por defecto */
+  transition: opacity 2s ease; /* Transición suave */
+  width: 100%;
+  text-align: right;
+  margin-top: 20px;
+  font-style: italic;
+  font-size: 0.85rem;
+  color: #555;
+}
+
+/* Clase para mostrar la firma (activada por JS) */
+#signature.visible {
+  opacity: 1;
+}
+
+.outside {
+  transform-style: preserve-3d;
+  z-index: 1;
+  transform-origin: left;
+  transition: 2s;
+}
+
+.front,
+.back {
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.front {
+  background-color: #ffffff;
+  /* Asegúrate de tener la imagen 'noppy.gif' en la carpeta */
+  background-image: url("noppy.gif");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.back {
+  transform: rotateY(180deg);
+  background: linear-gradient(to left, #e7e7e7, #ffffff 30%);
+}
+
+/* Media Query para celulares */
+@media (max-width: 640px) {
+  .inside {
+    padding: 0 15px;
+  }
+
+  .inside p#message-text {
+    font-size: 0.95rem;
+  }
+}

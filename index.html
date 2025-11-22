@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Birthday Card</title>
+    
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins&display=swap"
+      rel="stylesheet"
+    />
+    
+    <link rel="stylesheet" href="style.css" />
+
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  </head>
+  <body>
+    
+    <div class="card" id="card">
+      <div class="outside">
+        <div class="front"></div>
+        <div class="back"></div>
+      </div>
+      <div class="inside">
+        <p id="message-text"></p>
+        
+        <p id="signature">Con cariño, Jafet</p>
+      </div>
+    </div>
+
+    <audio id="birthday-music" loop src="happy-birthday.mp3"></audio>
+
+    <script>
+      // --- VARIABLES ---
+      const card = document.getElementById("card");
+      const music = document.getElementById("birthday-music");
+      const textElement = document.getElementById("message-text");
+      const signatureElement = document.getElementById("signature");
+      
+      // Texto del mensaje
+      const fullText = "¡Feliz cumpleaños, mi querida amiga Ximena! Espero que te la hayas pasado increíble. Te deseo lo mejor.";
+      
+      // Variables de control
+      let confettiInterval;
+      let typingTimeout;
+      let charIndex = 0;
+
+      // --- FUNCIONES ---
+
+      // 1. Función Máquina de Escribir
+      function typeWriter() {
+        if (charIndex < fullText.length) {
+          textElement.innerHTML += fullText.charAt(charIndex);
+          charIndex++;
+          // Velocidad de escritura: 50ms por letra
+          typingTimeout = setTimeout(typeWriter, 50); 
+        } else {
+          // Cuando termina de escribir, muestra la firma
+          signatureElement.classList.add("visible");
+        }
+      }
+
+      // 2. Función Lanzar Confeti
+      function lanzarConfeti() {
+        // Dispara confeti cada 250ms
+        confettiInterval = setInterval(() => {
+          // Lado Izquierdo
+          confetti({
+            particleCount: 5,
+            angle: 60,
+            spread: 55,
+            origin: { x: 0 },
+            colors: ['#d9a7c7', '#ffccd5', '#ffffff'] // Colores del tema
+          });
+          // Lado Derecho
+          confetti({
+            particleCount: 5,
+            angle: 120,
+            spread: 55,
+            origin: { x: 1 },
+            colors: ['#d9a7c7', '#ffccd5', '#ffffff']
+          });
+        }, 250);
+      }
+
+      // --- EVENTO PRINCIPAL (CLICK) ---
+      card.addEventListener("click", () => {
+        // Alternar clase .open para abrir/cerrar
+        card.classList.toggle("open");
+
+        // Verificamos si la carta se acaba de ABRIR o CERRAR
+        if (card.classList.contains("open")) {
+          
+          // >> ACCIONES AL ABRIR <<
+          music.play();
+          lanzarConfeti();
+          
+          // Esperamos 1 segundo (tiempo de apertura) para empezar a escribir
+          setTimeout(() => {
+             typeWriter();
+          }, 1000);
+
+        } else {
+          
+          // >> ACCIONES AL CERRAR <<
+          music.pause();
+          music.currentTime = 0; // Reinicia la canción
+          
+          // Detener y limpiar confeti
+          clearInterval(confettiInterval);
+          confetti.reset(); // Limpia la pantalla
+
+          // Reiniciar texto y firma
+          clearTimeout(typingTimeout);
+          textElement.innerHTML = ""; // Borra el texto
+          charIndex = 0; // Reinicia el índice
+          signatureElement.classList.remove("visible"); // Oculta la firma
+        }
+      });
+    </script>
+  </body>
+</html>
